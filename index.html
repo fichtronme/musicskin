@@ -50,7 +50,7 @@ button.primary{color:#1b1d22;background:linear-gradient(180deg,#f6f7f9,#c5c9d0);
 #status.err{color:#ffd7d7}#status.err::before{background:#ff6b6b}
 @keyframes pulse{50%{box-shadow:0 0 0 6px rgba(232,234,238,0);transform:scale(.8)}0%{box-shadow:0 0 0 0 rgba(232,234,238,.6)}}
 #stage{padding:16px;display:flex;flex-direction:column;justify-content:center;gap:16px;min-height:0}
-#video{flex:none;aspect-ratio:16/9;min-width:200px;min-height:200px;border-radius:22px;overflow:hidden;background:#000;box-shadow:0 12px 30px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.28)}
+#video{flex:none;width:100%;aspect-ratio:16/9;min-width:200px;min-height:200px;border-radius:22px;overflow:hidden;background:#000;box-shadow:0 12px 30px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.28)}
 #video iframe{width:100%;height:100%;display:block}
 #title{font-size:1.5rem;font-weight:700;line-height:1.15;letter-spacing:-.01em}
 #by{color:var(--dim);margin-top:4px}
@@ -249,10 +249,10 @@ body.lsync #lsync{opacity:1;transform:translate(-50%,0) scale(1)}
 .ln.plain:empty{padding:0;margin-bottom:.4em;min-height:.5em}
 body.lyrics #lyricspanel{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .6s .2s,visibility 0s,margin .75s cubic-bezier(.2,.9,.3,1)}
 @media(min-width:861px){
-  body.lyrics main{grid-template-columns:minmax(0,.9fr) minmax(0,1.3fr) minmax(0,.9fr) 165px}
+  body.lyrics main{grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr) minmax(0,1fr) 165px}
   /* only slightly smaller songs and playlists while the lyrics are open */
   body.lyrics #songpanel,body.lyrics #listpanel{padding:14px;gap:10px}
-  body.lyrics #video{width:90%;min-width:200px;min-height:200px;align-self:center}
+  body.lyrics #video{width:100%}
   body.lyrics #tracks li{padding:4px 11px}
   body.lyrics #tracks b{font-size:.78rem}
   body.lyrics #tracks span{font-size:.66rem}
