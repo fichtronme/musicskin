@@ -265,6 +265,82 @@ body.lyrics #lyricspanel{opacity:1;visibility:visible;pointer-events:auto;transi
 @media(prefers-reduced-motion:reduce){#fill,.panel{animation:none!important;transform:none!important}#blobs i,.panel,#tracks li,#status::before,.playing .ctl .primary,.playing #art{animation:none}*{transition:none!important}}
 #trail{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:50;filter:blur(9px)}
 @media(prefers-reduced-motion:reduce){#trail{display:none}}
+
+/* ---------- Queue ---------- */
+#ptabs{position:relative;display:grid;grid-template-columns:1fr 1fr;flex:none;padding:4px;border-radius:999px;background:rgba(255,255,255,.05);box-shadow:inset 0 2px 6px rgba(0,0,0,.28),inset 0 -1px 0 rgba(255,255,255,.18)}
+#ptabs i{position:absolute;left:4px;top:4px;bottom:4px;width:calc((100% - 8px) / 2);border-radius:999px;pointer-events:none;background:linear-gradient(180deg,#f6f7f9,#c5c9d0);box-shadow:inset 0 1.5px 0 #fff,0 4px 14px rgba(225,228,234,.3);transition:transform .5s cubic-bezier(.3,1.35,.5,1)}
+#ptabs.q i{transform:translateX(100%)}
+#ptabs button{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 10px;font-size:.84rem;background:none;box-shadow:none;color:var(--dim);transition:color .25s}
+#ptabs button:hover,#ptabs button:active{transform:none}
+#ptabs button[aria-selected=true]{color:#1b1d22}
+#qcount{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:99px;font-size:.7rem;font-weight:700;background:rgba(255,255,255,.2);color:#fff;font-variant-numeric:tabular-nums}
+#ptabs button[aria-selected=true] #qcount{background:rgba(0,0,0,.14);color:#1b1d22}
+#qcount[hidden]{display:none}
+#qcount.bump{animation:qbump .5s cubic-bezier(.3,1.7,.5,1)}
+@keyframes qbump{40%{transform:scale(1.5)}}
+
+#queuebox{display:none;flex-direction:column;gap:10px;flex:1;min-height:0}
+#songpanel.qtab #queuebox{display:flex}
+#songpanel.qtab .qhead,#songpanel.qtab #schip,#songpanel.qtab #tracks{display:none}
+
+#qnow{display:flex;align-items:center;gap:12px;flex:none;padding:10px 14px 10px 10px;border-radius:20px;background:linear-gradient(135deg,rgba(255,255,255,.14),rgba(255,255,255,.04));box-shadow:inset 0 1.5px 0 rgba(255,255,255,.4),inset 0 -1px 0 rgba(255,255,255,.08),0 10px 24px rgba(0,0,0,.28)}
+#qnow[hidden]{display:none}
+#qnow img{width:54px;height:54px;border-radius:14px;object-fit:cover;flex:none;background:rgba(255,255,255,.1);box-shadow:0 4px 14px rgba(0,0,0,.4)}
+.qt{min-width:0;flex:1}
+.qt b{display:block;font-size:.84rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qt span{display:block;font-size:.72rem;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#qnow .qt b{font-size:.95rem}
+.qlabel{font-size:.62rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:2px}
+.eq{display:flex;gap:3px;align-items:flex-end;height:18px;flex:none}
+.eq i{width:3px;height:25%;border-radius:2px;background:#fff;opacity:.9;box-shadow:0 0 8px rgba(255,255,255,.5)}
+.playing .eq i{animation:eq 1s ease-in-out infinite}
+.eq i:nth-child(2){animation-delay:-.3s}.eq i:nth-child(3){animation-delay:-.6s}.eq i:nth-child(4){animation-delay:-.15s}
+@keyframes eq{0%,100%{height:25%}50%{height:100%}}
+
+.qh2{display:flex;align-items:center;justify-content:space-between;flex:none;padding:2px 8px 0 10px;min-height:30px}
+.qh2 h3{font-size:.72rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+#qclear{padding:5px 13px;font-size:.74rem}
+#qclear[hidden]{display:none}
+
+#qlist{list-style:none;flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:2px 8px 6px 2px;display:flex;flex-direction:column;gap:6px}
+#qlist[hidden]{display:none}
+#qlist::-webkit-scrollbar{width:14px}
+#qlist::-webkit-scrollbar-track{background:transparent;margin:6px 0}
+#qlist::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border:4px solid transparent;background-clip:padding-box;border-radius:99px}
+#qlist::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.5);background-clip:padding-box}
+@supports not selector(::-webkit-scrollbar){#qlist{scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.3) transparent}}
+#qlist li{position:relative;flex:none;display:flex;align-items:center;gap:10px;padding:7px 8px 7px 6px;border-radius:18px;cursor:pointer;background:rgba(255,255,255,.04);box-shadow:inset 0 1px 0 rgba(255,255,255,.1);transition:background .2s,transform .3s cubic-bezier(.3,1.5,.5,1),opacity .25s,box-shadow .2s}
+#qlist li:hover{background:rgba(255,255,255,.1);box-shadow:inset 0 1px 0 rgba(255,255,255,.3);transform:translateX(2px)}
+#qlist li.new{animation:qin .5s cubic-bezier(.2,1.2,.4,1) both}
+#qlist li.drag{opacity:.35}
+#qlist li.out{opacity:0;transform:translateX(40px) scale(.94);pointer-events:none}
+#qlist li.over-top::before,#qlist li.over-bottom::after{content:"";position:absolute;left:12px;right:12px;height:2px;border-radius:2px;background:#fff;box-shadow:0 0 10px rgba(255,255,255,.75)}
+#qlist li.over-top::before{top:-4px}
+#qlist li.over-bottom::after{bottom:-4px}
+@keyframes qin{from{opacity:0;transform:translateX(36px) scale(.94);filter:blur(6px)}}
+.qn{width:16px;flex:none;text-align:center;font-size:.7rem;color:var(--dim);font-variant-numeric:tabular-nums}
+.grip{width:10px;height:18px;flex:none;opacity:.3;cursor:grab;background:radial-gradient(circle,#fff 1.4px,transparent 1.8px) 0 0/5px 6px;transition:opacity .2s}
+#qlist li:hover .grip{opacity:.85}
+#qlist img{width:44px;height:44px;border-radius:12px;object-fit:cover;flex:none;background:rgba(255,255,255,.1);box-shadow:0 4px 12px rgba(0,0,0,.4);opacity:0;transition:opacity .25s}
+#qlist img.ld{opacity:1}
+.qx{flex:none;width:28px;height:28px;padding:0;display:grid;place-items:center;font-size:.65rem;opacity:0;transition:opacity .2s,transform .3s cubic-bezier(.3,1.7,.5,1)}
+#qlist li:hover .qx,.qx:focus-visible{opacity:1}
+
+#qempty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:20px;color:var(--dim);font-size:.85rem;line-height:1.45}
+#qempty[hidden]{display:none}
+#qempty b{color:var(--text);font-size:1rem;font-weight:600}
+#qempty .qic{width:64px;height:64px;border-radius:22px;display:grid;place-items:center;font-size:1.6rem;color:var(--text);background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.05));box-shadow:inset 0 1.5px 0 rgba(255,255,255,.5),0 10px 24px rgba(0,0,0,.3);animation:float 7s ease-in-out infinite}
+
+/* add-to-queue buttons on each song row */
+#tracks li{position:relative}
+.qadd,.qnext{position:absolute;top:50%;margin-top:-13px;width:26px;height:26px;padding:0;display:grid;place-items:center;font-size:.95rem;line-height:1;opacity:0;pointer-events:none;transition:opacity .2s,transform .3s cubic-bezier(.3,1.7,.5,1),background .2s}
+.qadd{right:8px}
+.qnext{right:38px;font-size:.78rem}
+#tracks li:hover .qadd,#tracks li:hover .qnext,#tracks li:focus-within .qadd,#tracks li:focus-within .qnext{opacity:1;pointer-events:auto}
+#tracks li:hover b,#tracks li:hover span{padding-right:64px}
+.qadd.done,.qnext.done{opacity:1;pointer-events:auto;color:#1b1d22;background:linear-gradient(180deg,#f6f7f9,#c5c9d0)}
+@media(hover:none){.qadd,.qnext{opacity:.9;pointer-events:auto}#qlist .qx{opacity:1}}
+@media(prefers-reduced-motion:reduce){.eq i,#qlist li.new,#qempty .qic,#qcount.bump{animation:none!important}}
 </style>
 </head>
 <body>
@@ -316,9 +392,20 @@ body.lyrics #lyricspanel{opacity:1;visibility:visible;pointer-events:auto;transi
   </section>
   <aside class="panel" id="songpanel">
     <div id="video"><div id="yt"></div></div>
+    <div id="ptabs" role="tablist" aria-label="Songs or queue"><i></i><button type="button" id="tabsongs" role="tab" aria-selected="true">Songs</button><button type="button" id="tabqueue" role="tab" aria-selected="false">Queue <span id="qcount" hidden>0</span></button></div>
     <div class="qhead"><h2 id="songtitle">Songs</h2><span id="count"></span></div>
     <div id="schip" hidden><span id="sq"></span><button id="sclear" aria-label="Clear search">&#10005;</button></div>
     <ul id="tracks"><li class="empty">Your songs appear here.</li></ul>
+    <div id="queuebox">
+      <div id="qnow" hidden>
+        <img id="qnimg" alt="">
+        <div class="qt"><div class="qlabel">Now playing</div><b id="qnt"></b><span id="qnb"></span></div>
+        <div class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      </div>
+      <div class="qh2"><h3 id="qh">Next up</h3><button id="qclear" type="button" hidden>Clear</button></div>
+      <ol id="qlist" hidden></ol>
+      <div id="qempty"><div class="qic">&#9835;</div><b>Your queue is empty</b><span>Hover a song and tap + to add it, or &#9197; to play it next.</span></div>
+    </div>
   </aside>
   <aside class="panel" id="listpanel">
     <div class="qhead"><h2>Playlists</h2></div>
@@ -468,15 +555,11 @@ async function fetchTracks(id) {
 
 async function openList(id) {
   try {
-    exitSearch(); msg('Loading songs…');
+    showTab('songs'); exitSearch(); msg('Loading songs…');
     tracks = await fetchTracks(id); idx = -1;
     const ul = $('#tracks'); ul.innerHTML = '';
     if (!tracks.length) { ul.innerHTML = '<li class="empty">This list has no playable songs.</li>'; return msg('This list is empty.'); }
-    tracks.forEach((s, i) => {
-      const li = document.createElement('li');
-      li.innerHTML = '<b></b><span></span>'; li.firstChild.textContent = s.title; li.lastChild.textContent = s.by;
-      li.style.animationDelay = Math.min(i, 14) * 35 + 'ms'; li.onclick = () => play(i); ul.appendChild(li);
-    });
+    tracks.forEach((s, i) => addRow(ul, s, i));
     $('#count').textContent = tracks.length + ' songs'; fitTracks();
     msg(tracks.length + ' songs loaded. Tap one to play.');
   } catch (e) { msg('Could not load songs: ' + e.message, true); }
@@ -561,7 +644,7 @@ async function searchSongs(q) {
   if (!token) return msg('Connect your account first, then you can search for songs.', true);
   try {
     msg('Searching for "' + q + '"…');
-    document.body.classList.add('sloading'); setSongTitle('Searching…');
+    showTab('songs'); document.body.classList.add('sloading'); setSongTitle('Searching…');
     $('#sq').textContent = '🔎 “' + q + '”';
     $('#schip').hidden = true; void $('#schip').offsetWidth; $('#schip').hidden = false;
     const qn = norm(q);
@@ -597,11 +680,7 @@ async function searchSongs(q) {
     document.body.classList.remove('sloading'); document.body.classList.add('searching'); setSongTitle('Search results');
     const ul = $('#tracks'); ul.innerHTML = '';
     if (!tracks.length) { ul.innerHTML = '<li class="empty">No songs found.</li>'; $('#count').textContent = ''; return msg('No songs found for "' + q + '".', true); }
-    tracks.forEach((s, i) => {
-      const li = document.createElement('li');
-      li.innerHTML = '<b></b><span></span>'; li.firstChild.textContent = s.title; li.lastChild.textContent = s.by;
-      li.style.animationDelay = Math.min(i, 14) * 35 + 'ms'; li.onclick = () => play(i); ul.appendChild(li);
-    });
+    tracks.forEach((s, i) => addRow(ul, s, i));
     ul.scrollTop = 0;
     $('#count').textContent = tracks.length + ' results'; fitTracks();
     $('#lists').querySelectorAll('button.on').forEach(b => b.classList.remove('on')); cylinder();
@@ -715,9 +794,10 @@ window.onYouTubeIframeAPIReady = () => {
         if (Date.now() - lastErr < 800) return; lastErr = Date.now();
         const why = { 2: 'invalid request', 5: 'player error', 100: 'video removed or private', 101: 'embedding disabled by the owner', 150: 'embedding disabled by the owner' }[e.data] || 'error ' + e.data;
         const code = ' [code ' + e.data + ', page ' + location.origin + ']';
-        const li = document.querySelectorAll('#tracks li')[idx];
+        const li = nowQueued ? null : document.querySelectorAll('#tracks li')[idx];
         if (li) { li.classList.add('bad'); li.title = "Can't play here: " + why; }
-        const name = tracks[idx] ? '"' + tracks[idx].title + '"' : 'This song';
+        const cs = cur || tracks[idx];
+        const name = cs ? '"' + cs.title + '"' : 'This song';
         if (++errRun >= 3) return msg(name + " can't play here (" + why + ')' + code + '. Stopped after 3 failed songs in a row.', true);
         msg(name + " can't play here (" + why + ')' + code + '. Skipping.', true);
         setTimeout(next, 700);
@@ -739,6 +819,7 @@ $('#seek').onchange = e => { const t = player.getDuration() * e.target.value / 1
 function setArt(id) {
   if (!id || setArt.id === id) return;
   setArt.id = id;
+  qNow();
   if (document.body.classList.contains('lyrics')) loadLyrics();
   const img = $('#cover'), art = $('#art');
   const names = ['maxresdefault', 'sddefault', 'hqdefault']; let k = 0;
@@ -747,18 +828,33 @@ function setArt(id) {
   img.onerror = () => { if (setArt.id === id && ++k < names.length) img.src = `https://i.ytimg.com/vi/${id}/${names[k]}.jpg`; };
   img.src = `https://i.ytimg.com/vi/${id}/${names[0]}.jpg`;
 }
-function play(i) {
-  if (!player || !player.loadVideoById || !tracks[i]) return;
-  idx = i; const s = tracks[i];
+let cur = null, nowQueued = false;
+function startTrack(s) {
+  cur = s;
   player.loadVideoById(s.id);
   $('#title').textContent = s.title; $('#by').textContent = s.by;
-  document.querySelectorAll('#tracks li').forEach((li, k) => li.classList.toggle('on', k === i));
-  const on = document.querySelector('#tracks li.on'); on && on.scrollIntoView({ block: 'nearest' });
   document.title = s.title;
   setArt(s.id);
   $('#bg').style.backgroundImage = `url(https://i.ytimg.com/vi/${s.id}/hqdefault.jpg)`; $('#bg').classList.add('on');
 }
-const next = () => { if (tracks.length) play((idx + 1) % tracks.length); else player.nextVideo && player.nextVideo(); };
+function play(i) {
+  if (!player || !player.loadVideoById || !tracks[i]) return;
+  idx = i; nowQueued = false;
+  startTrack(tracks[i]);
+  document.querySelectorAll('#tracks li').forEach((li, k) => li.classList.toggle('on', k === i));
+  const on = document.querySelector('#tracks li.on'); on && on.scrollIntoView({ block: 'nearest' });
+}
+function playQueued(s) {
+  if (!player || !player.loadVideoById) return;
+  nowQueued = true;
+  startTrack(s);
+  document.querySelectorAll('#tracks li').forEach((li, k) => li.classList.toggle('on', !!tracks[k] && tracks[k].id === s.id));
+}
+/* Next: songs in the queue go first, then the list carries on from where it was */
+const next = () => {
+  if (queue.length && player && player.loadVideoById) { const q = queue.shift(); saveQueue(); renderQueue(); return playQueued(q); }
+  if (tracks.length) play((idx + 1) % tracks.length); else player.nextVideo && player.nextVideo();
+};
 $('#next').onclick = next;
 $('#prev').onclick = () => tracks.length ? play((idx - 1 + tracks.length) % tracks.length) : player.previousVideo();
 /* clear (x) button inside the search box */
@@ -776,6 +872,117 @@ addEventListener('keydown', e => {
 });
 addEventListener('keyup', e => { if (e.code === 'Space' && !typing(e.target)) e.preventDefault(); });  // stops a focused button from also clicking
 $('#pp').onclick = () => { if (!player || !player.getPlayerState) return; player.getPlayerState() === 1 ? player.pauseVideo() : player.playVideo(); };
+
+/* ---------- Queue ---------- */
+const QKEY = 'ytm_queue';
+let queue = [], qseq = 0;
+const mkQ = s => ({ qid: ++qseq, id: s.id, title: s.title, by: s.by });
+function saveQueue() { try { localStorage.setItem(QKEY, JSON.stringify(queue.map(q => ({ id: q.id, title: q.title, by: q.by })))); } catch (e) { /* storage blocked: the queue still works for this session */ } }
+function loadQueue() { try { const a = JSON.parse(localStorage.getItem(QKEY)); if (Array.isArray(a)) queue = a.filter(x => x && x.id).map(mkQ); } catch (e) {} }
+
+function showTab(which) {
+  const q = which === 'queue';
+  $('#songpanel').classList.toggle('qtab', q);
+  $('#ptabs').classList.toggle('q', q);
+  $('#tabsongs').setAttribute('aria-selected', !q); $('#tabqueue').setAttribute('aria-selected', q);
+  if (!q) refit();
+}
+$('#tabsongs').onclick = () => showTab('songs');
+$('#tabqueue').onclick = () => showTab('queue');
+
+function qNow() {
+  const id = setArt.id, box = $('#qnow');
+  box.hidden = !id; if (!id) return;
+  const im = $('#qnimg'), src = 'https://i.ytimg.com/vi/' + id + '/mqdefault.jpg';
+  if (im.getAttribute('src') !== src) im.src = src;
+  $('#qnt').textContent = $('#title').textContent; $('#qnb').textContent = $('#by').textContent;
+}
+function bumpBadge() { const c = $('#qcount'); c.classList.remove('bump'); void c.offsetWidth; c.classList.add('bump'); }
+function addToQueue(s, front) {
+  const q = mkQ(s); q._new = true;
+  if (front) queue.unshift(q); else queue.push(q);
+  saveQueue(); renderQueue(); bumpBadge();
+  msg('"' + s.title + '" ' + (front ? 'will play next.' : 'added to the queue.'));
+}
+function removeQ(qid, li) {
+  li.classList.add('out');
+  setTimeout(() => { const i = queue.findIndex(x => x.qid === qid); if (i >= 0) queue.splice(i, 1); saveQueue(); renderQueue(); }, 220);
+}
+function playNow(qid) {
+  const i = queue.findIndex(x => x.qid === qid); if (i < 0) return;
+  const s = queue.splice(i, 1)[0]; saveQueue(); renderQueue(); playQueued(s);
+}
+$('#qclear').onclick = () => { queue = []; saveQueue(); renderQueue(); msg('Queue cleared.'); };
+
+function renderQueue() {
+  const ol = $('#qlist'), n = queue.length;
+  ol.innerHTML = '';
+  queue.forEach((s, i) => {
+    const li = document.createElement('li'); li.dataset.qid = s.qid; li.draggable = true;
+    if (s._new) { li.classList.add('new'); delete s._new; }
+    const num = document.createElement('span'); num.className = 'qn'; num.textContent = i + 1;
+    const grip = document.createElement('i'); grip.className = 'grip'; grip.setAttribute('aria-hidden', 'true');
+    const img = new Image(); img.alt = ''; img.draggable = false; img.loading = 'lazy';
+    img.onload = () => img.classList.add('ld');
+    img.src = 'https://i.ytimg.com/vi/' + s.id + '/mqdefault.jpg'; if (img.complete && img.naturalWidth) img.classList.add('ld');
+    const t = document.createElement('div'); t.className = 'qt';
+    const b = document.createElement('b'), a = document.createElement('span'); b.textContent = s.title; a.textContent = s.by; t.append(b, a);
+    const x = document.createElement('button'); x.type = 'button'; x.className = 'qx'; x.innerHTML = '&#10005;'; x.title = 'Remove from queue'; x.setAttribute('aria-label', 'Remove from queue');
+    x.onclick = e => { e.stopPropagation(); removeQ(s.qid, li); };
+    li.onclick = () => playNow(s.qid);
+    li.append(num, grip, img, t, x); ol.appendChild(li);
+  });
+  ol.hidden = !n; $('#qempty').hidden = !!n; $('#qclear').hidden = !n;
+  $('#qh').textContent = n ? 'Next up \u00B7 ' + n : 'Next up';
+  const c = $('#qcount'); c.textContent = n; c.hidden = !n;
+  qNow();
+}
+/* drag a song up or down to reorder the queue */
+(() => {
+  const ol = $('#qlist'); let from = null;
+  const clear = () => ol.querySelectorAll('.over-top,.over-bottom').forEach(l => l.classList.remove('over-top', 'over-bottom'));
+  const rowOf = e => (e.target && e.target.closest) ? e.target.closest('li[data-qid]') : null;
+  ol.addEventListener('dragstart', e => {
+    const li = rowOf(e); if (!li) return;
+    from = +li.dataset.qid; li.classList.add('drag');
+    e.dataTransfer.effectAllowed = 'move'; try { e.dataTransfer.setData('text/plain', String(from)); } catch (x) {}
+  });
+  ol.addEventListener('dragover', e => {
+    if (from == null) return;
+    e.preventDefault(); e.dataTransfer.dropEffect = 'move'; clear();
+    const li = rowOf(e); if (!li || +li.dataset.qid === from) return;
+    const r = li.getBoundingClientRect(); li.classList.add(e.clientY > r.top + r.height / 2 ? 'over-bottom' : 'over-top');
+  });
+  ol.addEventListener('drop', e => {
+    if (from == null) return;
+    e.preventDefault(); clear();
+    const li = rowOf(e), fi = queue.findIndex(x => x.qid === from);
+    if (fi < 0 || (li && +li.dataset.qid === from)) { from = null; return; }
+    const m = queue.splice(fi, 1)[0]; let ti = queue.length;
+    if (li) { const r = li.getBoundingClientRect(); ti = queue.findIndex(x => x.qid === +li.dataset.qid) + (e.clientY > r.top + r.height / 2 ? 1 : 0); }
+    queue.splice(ti, 0, m); from = null; saveQueue(); renderQueue();
+  });
+  ol.addEventListener('dragend', () => { from = null; clear(); ol.querySelectorAll('.drag').forEach(l => l.classList.remove('drag')); });
+})();
+
+/* song rows: hover buttons to add to the queue or play next */
+function flash(btn) {
+  const t = btn.dataset.t || (btn.dataset.t = btn.textContent);
+  btn.textContent = '\u2713'; btn.classList.add('done');
+  clearTimeout(btn._t); btn._t = setTimeout(() => { btn.textContent = t; btn.classList.remove('done'); }, 900);
+}
+function addRow(ul, s, i) {
+  const li = document.createElement('li');
+  const b = document.createElement('b'), sp = document.createElement('span');
+  b.textContent = s.title; sp.textContent = s.by;
+  const nx = document.createElement('button'); nx.type = 'button'; nx.className = 'qnext'; nx.textContent = '\u23ED'; nx.title = 'Play next'; nx.setAttribute('aria-label', 'Play next');
+  const ad = document.createElement('button'); ad.type = 'button'; ad.className = 'qadd'; ad.textContent = '+'; ad.title = 'Add to queue'; ad.setAttribute('aria-label', 'Add to queue');
+  nx.onclick = e => { e.stopPropagation(); addToQueue(s, true); flash(nx); };
+  ad.onclick = e => { e.stopPropagation(); addToQueue(s); flash(ad); };
+  li.append(b, sp, nx, ad);
+  li.style.animationDelay = Math.min(i, 14) * 35 + 'ms'; li.onclick = () => play(i); ul.appendChild(li);
+}
+loadQueue(); renderQueue();
 
 /* ---------- Lyrics (synced, from LRCLIB) ---------- */
 const lyr = { id: null, lines: [], synced: false, active: -1, hold: 0, req: 0 };
